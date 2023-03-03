@@ -1,27 +1,27 @@
 {
-    "id": "8BDCA3D9",
-    "path": "~/Amber/data_raw/chronicles_amber.R",
-    "project_path": "data_raw/chronicles_amber.R",
+    "id": "A4AB1417",
+    "path": "~/Amber/R/amber_novels.R",
+    "project_path": "R/amber_novels.R",
     "type": "r_source",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1677188739546.0,
+    "created": 1677873872247.0,
     "source_on_save": false,
-    "relative_order": 2,
+    "relative_order": 6,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "42,11",
-        "scrollLine": "27"
+        "cursorPosition": "12,80",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1677707402,
+    "lastKnownWriteTime": 1677707392,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1677707402762,
+    "last_content_update": 1677707392,
     "read_only": false,
     "read_only_alternatives": []
 }

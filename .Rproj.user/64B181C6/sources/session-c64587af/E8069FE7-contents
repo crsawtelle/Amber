@@ -27,4 +27,9 @@ chronicles_of_amber <- function(){
           "Knight of Shadows" = Amber::knight_of_shadows,
           "Prince of Chaos" = Amber::prince_of_chaos
   )
+  ret <- data.frame(text = unlist(books, use.names = FALSE),
+                    stringsAsFactors = FALSE)
+  ret$book <- factor(rep(ret$book, sapply(books, length)))
+  ret$book <- factor(ret$book, levels = unique(ret$book))
+  structure(ret, class = c("tbl_df", "tbl", "data.frame"))
 }
