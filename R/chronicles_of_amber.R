@@ -1,0 +1,30 @@
+#' Text data frame of Roger Zelazny's 10 completed novels in the Chronicles of
+#' Amber
+#'
+#' Returns a data frame with all 10 books in Roger Zelazny's Chronicles of Amber
+#' with to variables: 'text' which is each line in the novel and 'book' which is
+#' the titles of each novel.
+#'
+#' @return A data frame with two columns: 'text' and 'book'
+#'
+#' @name chronicles_of_amber
+#'
+#' @source <https://oceanofpdf.com/authors/roger-zelazny/pdf-epub-the-great-book-of-amber-the-chronicles-of-amber-1-10-download/>
+#'
+#' @export
+#'
+#'
+chronicles_of_amber <- function(){
+  books <- list(
+          "Nine Princes in Amber" = Amber::nine_princes_in_amber,
+          "The Guns of Avalon" = Amber::the_guns_of_avalon,
+          "Sign of the Unicorn" = Amber::sign_of_the_unicorn,
+          "The Hand of Oberon" = Amber::the_hand_of_oberon,
+          "The Courts of Chaos" = Amber::the_courts_of_chaos,
+          "The Trumps of Doom" = Amber::the_trumps_of_doom,
+          "Blood of Amber" = Amber::blood_of_amber,
+          "Sign of Chaos" = Amber::sign_of_chaos,
+          "Knight of Shadows" = Amber::knight_of_shadows,
+          "Prince of Chaos" = Amber::prince_of_chaos
+  )
+}
