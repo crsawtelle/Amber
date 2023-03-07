@@ -1,0 +1,15 @@
+"0","knitr::opts_chunk$set(echo = TRUE)"
+"0","if (!require(tidyverse)) install.packages('tidyverse')"
+"0","if (!require(rvest)) install.packages('rvest')"
+"2","Loading required package: rvest
+"
+"2","
+Attaching package: ‘rvest’
+
+"
+"2","The following object is masked from ‘package:readr’:
+
+    guess_encoding
+
+"
+"0","library(ggplot2)"

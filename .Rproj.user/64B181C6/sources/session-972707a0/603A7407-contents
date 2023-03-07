@@ -1,0 +1,176 @@
+---
+title: "Another Messing"
+author: "Crystal Sawtelle"
+date: "2023-01-24"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require(tidyverse)) install.packages('tidyverse')
+if (!require(rvest)) install.packages('rvest')
+library(ggplot2)
+```
+
+## 
+
+```{r}
+url <- 'https://www.imdb.com/search/title/?count=100&release_date=2016,2016&title_type=feature'
+
+page <- read_html(url)
+page
+```
+
+```{r, fig.height=10}
+# Using CSS selectors to scrape the ranking section
+rank_data_html <- html_nodes(page, '.text-primary')
+
+# convert the ranking data to text
+rank_data <- as.numeric(html_text(rank_data_html))
+head(rank_data)
+length(rank_data)
+```
+```{r}
+# using CSS selectors to scrape the titles
+title_data_html <- html_nodes(page, '.lister-item-header a')
+title_data <- html_text(title_data_html)
+head(title_data)
+length(title_data)
+```
+
+```{r}
+# Description
+desc_data_html <- html_nodes(page, 'p:nth-child(4)')
+desc_data <- html_text(desc_data_html)
+head(desc_data)
+length(desc_data)
+```
+
+```{r}
+# Runtime
+runtime_data_html <- html_nodes(page, '.runtime')
+runtime_data <- html_text(runtime_data_html)
+runtime_data <- gsub("min", "", runtime_data)
+head(runtime_data)
+length(runtime_data)
+```
+
+```{r}
+# Genre
+genre_data_html <- html_nodes(page, '.genre')
+genre_data <- html_text(genre_data_html)
+# removing \n from the list
+genre_data <- gsub("\n", "", genre_data)
+# removing extra spaces at the end
+genre_data <- gsub(" ", "", genre_data)
+# taking only the first genre from each movie
+genre_data <- gsub(",.*", "", genre_data)
+# converting to a factor
+genre_data <- as.factor(genre_data)
+head(genre_data)
+length(genre_data)
+```
+
+```{r}
+# Rating
+rating_data_html <- html_nodes(page, '.ratings-imdb-rating strong')
+rating_data <- as.numeric(html_text(rating_data_html))
+head(rating_data)
+length(rating_data)
+```
+
+```{r}
+# Metascore
+metascore_data_html <- html_nodes(page, '.metascore')
+metascore_data <- html_text(metascore_data_html)
+metascore_data <- gsub(" ", "", metascore_data)
+
+for (i in c(8, 38, 69, 71, 93)) {
+  a <- metascore_data[1:(i-1)]
+  b <- metascore_data[i:length(metascore_data)]
+  metascore_data <- append(a, list("NA"))
+  metascore_data <- append(metascore_data, b)
+  
+}
+metascore_data <- as.numeric(metascore_data)
+#head(metascore_data, 10)
+length(metascore_data)
+```
+
+```{r}
+# Votes
+vote_data_html <- html_nodes(page, '.sort-num_votes-visible span:nth-child(2)')
+vote_data <- html_text(vote_data_html)
+vote_data <- as.numeric(gsub(",","", vote_data))
+head(vote_data)
+```
+
+```{r}
+# Gross_Earning_in_Millions
+gross_earning_data_html <- html_nodes(page, '.sort-num_votes-visible span:nth-child(5)')
+gross_earning <- html_text(gross_earning_data_html)
+# removing the 'M'
+gross_earning <- gsub("M", "", gross_earning)
+# removing the '$' 
+gross_earning <- substring(gross_earning, 2, 6)
+
+# need to fill in NA data - there are 9
+for (i in c(8, 38, 53, 69, 71, 77, 81, 87, 97)) {
+  a <- gross_earning[1:(i-1)]
+  b <- gross_earning[i:length(gross_earning)]
+  gross_earning <- append(a, list("NA"))
+  gross_earning <- append(gross_earning, b)
+  
+}
+gross_earning <- as.numeric(gross_earning)
+head(gross_earning, 10)
+length(gross_earning)
+```
+
+```{r}
+# Director
+director_data_html <- html_nodes(page, 'p:nth-child(5) a:nth-child(1)')
+director_data <- html_text(director_data_html)
+head(director_data)
+```
+
+```{r}
+# Main Actor
+actor_data_html <- html_nodes(page, '.lister-item-content .ghost+ a')
+actor_data <- html_text(actor_data_html)
+head(actor_data)
+```
+
+```{r}
+# Create a data frame by combining all the data
+movies_df <- data.frame(Rank = rank_data, Title = title_data, Description = desc_data, Runtime = runtime_data, Genre = genre_data, 
+                        Rating = rating_data, Metascore = metascore_data, Votes = vote_data, Gross_Earning_in_Mil = gross_earning, 
+                        Director = director_data, Actor = actor_data)
+View(movies_df)
+```
+
+
+```{r}
+ggplot(movies_df, aes(Runtime, Rating)) +
+  geom_point(aes(size = Votes, col = Genre))
+  
+```
+
+```{r}
+ggplot(movies_df, aes(Runtime, Gross_Earning_in_Mil)) +
+  geom_point(aes(size = Rating, col = Genre))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

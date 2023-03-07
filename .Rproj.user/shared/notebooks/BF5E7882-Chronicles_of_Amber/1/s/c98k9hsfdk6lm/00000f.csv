@@ -1,0 +1,8 @@
+"0","# create a custom stop words list to add to standard stop words"
+"0","word = c(""i’d"", ""i’m"", ""it’s"", ""don’t"", ""we’ve"", ""have’t"", ""didn’t"", ""you’re"", ""you’ve"", ""i’ve"", ""hadn’t"", ""we’ve"", ""i’ll"", ""he’s"", ""can’t"", ""wasn’t"", ""what’s"", ""won’t"", ""we’d"", ""doesn’t"", ""you’d"", ""he’d"", ""wouldn’t"", ""let’s"", ""there’s"", ""she’s"", ""she’d"", ""you’ll"", ""they’re"", ""we’ll"", ""weren’t"", ""aren’t"")"
+"0",""
+"0","lexicon = c( ""custom"",  ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"", ""custom"")"
+"0",""
+"0","data <- data.frame(word, lexicon)"
+"0","custom_stop_words <- rbind(data, stop_words)"
+"0","custom_stop_words"
