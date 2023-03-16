@@ -50,6 +50,8 @@ empty_lines = grepl('^\\s*$', the_guns_of_avalon)
 the_guns_of_avalon = the_guns_of_avalon[! empty_lines]
 the_guns_of_avalon <- gsub("oceanofpdf.com", " ", the_guns_of_avalon)
 the_guns_of_avalon <- gsub("’", "'", the_guns_of_avalon)
+the_guns_of_avalon <- gsub("”", " ", the_guns_of_avalon)
+the_guns_of_avalon <- gsub("“", " ", the_guns_of_avalon)
 
 sign_of_the_unicorn <- read_lines("Chronicles_of_Amber.txt", skip = 11959, n_max = 5304)
 sign_of_the_unicorn <- sign_of_the_unicorn %>%
@@ -59,6 +61,8 @@ empty_lines = grepl('^\\s*$', sign_of_the_unicorn)
 sign_of_the_unicorn = sign_of_the_unicorn[! empty_lines]
 sign_of_the_unicorn <- gsub("oceanofpdf.com", " ", sign_of_the_unicorn)
 sign_of_the_unicorn <- gsub("’", "'", sign_of_the_unicorn)
+sign_of_the_unicorn <- gsub("”", " ", sign_of_the_unicorn)
+sign_of_the_unicorn <- gsub("“", " ", sign_of_the_unicorn)
 
 the_hand_of_oberon <- read_lines("Chronicles_of_Amber.txt", skip = 17265, n_max = 5338)
 the_hand_of_oberon <- the_hand_of_oberon %>%
@@ -68,6 +72,8 @@ empty_lines = grepl('^\\s*$', the_hand_of_oberon)
 the_hand_of_oberon = the_hand_of_oberon[! empty_lines]
 the_hand_of_oberon <- gsub("oceanofpdf.com", " ", the_hand_of_oberon)
 the_hand_of_oberon <- gsub("’", "'", the_hand_of_oberon)
+the_hand_of_oberon <- gsub("”", " ", the_hand_of_oberon)
+the_hand_of_oberon <- gsub("“", " ", the_hand_of_oberon)
 
 the_courts_of_chaos <- read_lines("Chronicles_of_Amber.txt", skip = 22605, n_max = 4547)
 the_courts_of_chaos<- the_courts_of_chaos %>%
@@ -77,6 +83,8 @@ empty_lines = grepl('^\\s*$', the_courts_of_chaos)
 the_courts_of_chaos = the_courts_of_chaos[! empty_lines]
 the_courts_of_chaos <- gsub("oceanofpdf.com", " ", the_courts_of_chaos)
 the_courts_of_chaos <- gsub("’", "'", the_courts_of_chaos)
+the_courts_of_chaos <- gsub("”", " ", the_courts_of_chaos)
+the_courts_of_chaos <- gsub("“", " ", the_courts_of_chaos)
 
 the_trumps_of_doom <- read_lines("Chronicles_of_Amber.txt", skip = 27154, n_max = 5629)
 the_trumps_of_doom <- the_trumps_of_doom %>%
@@ -86,6 +94,8 @@ empty_lines = grepl('^\\s*$', the_trumps_of_doom)
 the_trumps_of_doom = the_trumps_of_doom[! empty_lines]
 the_trumps_of_doom <- gsub("oceanofpdf.com", " ", the_trumps_of_doom)
 the_trumps_of_doom <- gsub("’", "'", the_trumps_of_doom)
+the_trumps_of_doom <- gsub("”", " ", the_trumps_of_doom)
+the_trumps_of_doom <- gsub("“", " ", the_trumps_of_doom)
 
 blood_of_amber <- read_lines("Chronicles_of_Amber.txt", skip = 32784, n_max = 6656)
 blood_of_amber <- blood_of_amber %>%
@@ -95,6 +105,8 @@ empty_lines = grepl('^\\s*$', blood_of_amber)
 blood_of_amber = blood_of_amber[! empty_lines]
 blood_of_amber <- gsub("oceanofpdf.com", " ", blood_of_amber)
 blood_of_amber <- gsub("’", "'", blood_of_amber)
+blood_of_amber <- gsub("”", " ", blood_of_amber)
+blood_of_amber <- gsub("“", " ", blood_of_amber)
 
 sign_of_chaos <- read_lines("Chronicles_of_Amber.txt", skip = 39442, n_max = 6457)
 sign_of_chaos <- sign_of_chaos %>%
@@ -104,6 +116,8 @@ empty_lines = grepl('^\\s*$', sign_of_chaos)
 sign_of_chaos = sign_of_chaos[! empty_lines]
 sign_of_chaos <- gsub("oceanofpdf.com", " ", sign_of_chaos)
 sign_of_chaos <- gsub("’", "'", sign_of_chaos)
+sign_of_chaos <- gsub("”", " ", sign_of_chaos)
+sign_of_chaos <- gsub("“", " ", sign_of_chaos)
 
 knight_of_shadows <- read_lines("Chronicles_of_Amber.txt", skip = 45901, n_max = 6652)
 knight_of_shadows <- knight_of_shadows %>%
@@ -113,6 +127,8 @@ empty_lines = grepl('^\\s*$', knight_of_shadows)
 knight_of_shadows = knight_of_shadows[! empty_lines]
 knight_of_shadows <- gsub("oceanofpdf.com", " ", knight_of_shadows)
 knight_of_shadows <- gsub("’", "'", knight_of_shadows)
+knight_of_shadows <- gsub("”", " ", knight_of_shadows)
+knight_of_shadows <- gsub("“", " ", knight_of_shadows)
 
 prince_of_chaos <- read_lines("Chronicles_of_Amber.txt", skip = 52555, n_max = 6816)
 prince_of_chaos <- prince_of_chaos %>%
@@ -122,6 +138,8 @@ empty_lines = grepl('^\\s*$', prince_of_chaos)
 prince_of_chaos = prince_of_chaos[! empty_lines]
 prince_of_chaos <- gsub("oceanofpdf.com", " ", prince_of_chaos)
 prince_of_chaos <- gsub("’", "'", prince_of_chaos)
+prince_of_chaos <- gsub("”", " ", prince_of_chaos)
+prince_of_chaos <- gsub("“", " ", prince_of_chaos)
 
 # write each book to .txt file
 # write(nine_princes_in_amber, "Nine_Princes_in_Amber.txt")
