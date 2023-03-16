@@ -39,6 +39,8 @@ empty_lines = grepl('^\\s*$', nine_princes_in_amber)
 nine_princes_in_amber = nine_princes_in_amber[! empty_lines]
 nine_princes_in_amber <- gsub("oceanofpdf.com", " ", nine_princes_in_amber)
 nine_princes_in_amber <- gsub("’", "'", nine_princes_in_amber)
+nine_princes_in_amber <- gsub("”", " ", nine_princes_in_amber)
+nine_princes_in_amber <- gsub("“", " ", nine_princes_in_amber)
 
 the_guns_of_avalon <- read_lines("Chronicles_of_Amber.txt", skip = 5624, n_max = 6333)
 the_guns_of_avalon <- the_guns_of_avalon %>%
