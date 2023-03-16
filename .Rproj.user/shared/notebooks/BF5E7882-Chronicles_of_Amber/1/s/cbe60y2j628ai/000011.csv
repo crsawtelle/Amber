@@ -1,6 +1,0 @@
-"0",""
-"0","# amber_tidy_graph"
-"0","# "
-"0","# ggplot(amber_tidy, aes(word, n)) +"
-"0","#   geom_col() +"
-"0","#   coord_flip()"

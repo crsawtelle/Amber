@@ -1,0 +1,4 @@
+"0","book_words <- book_words %>%"
+"0","  bind_tf_idf(word, book, n)"
+"0",""
+"0","book_words"

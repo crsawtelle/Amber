@@ -1,0 +1,4 @@
+"0","the_trumps_of_doom <- amber_tidy %>%"
+"0","  group_by(book) %>%"
+"0","  filter(book == ""The Trumps of Doom"")"
+"0","# the_trumps_of_doom"

@@ -1,0 +1,8 @@
+"0","amber_chapters <- chronicles_of_amber() %>%"
+"0","  group_by(book) %>%"
+"0","  unnest_tokens(chapter, text, token = ""regex"", pattern = ""Chapter|chapter [\\divxlc]"") %>%"
+"0","  ungroup()"
+"0",""
+"0","amber_chapters %>%"
+"0","  group_by(book) %>%"
+"0","  summarise(chapters = n())"

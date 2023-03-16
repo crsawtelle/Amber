@@ -1,0 +1,5 @@
+"0","amber_tidy %>%"
+"0","  inner_join(get_sentiments(""bing""), by = join_by(word)) %>%"
+"0","  count(word, sentiment, sort = TRUE) %>%"
+"0","  acast(word ~ sentiment, value.var = ""n"", fill = 0) %>%"
+"0","  comparison.cloud(colors = c(""steelblue4"", ""magenta4""), max.words = 100)"
