@@ -1,8 +1,0 @@
-"0","amber_sentences <- chronicles_of_amber() %>%"
-"0","  unnest_tokens(sentence, text, token = ""sentences"")"
-"0",""
-"0","amber_sentences$sentence[20]"
-"1","[1]"
-"1"," ""sat upon my chest. i’d been over narcotized, i suddenly knew. no real"""
-"1","
-"

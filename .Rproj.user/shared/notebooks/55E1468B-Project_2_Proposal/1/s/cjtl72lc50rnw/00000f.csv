@@ -1,0 +1,7 @@
+"0","amber_books <- chronicles_of_amber() %>%"
+"0","  group_by(book) %>%"
+"0","  mutate(linenumber = row_number(),"
+"0","         chapter = cumsum(str_detect(text, regex(""^chapter [\\divxlc]"")))) %>%"
+"0","  ungroup()"
+"0",""
+"0",""

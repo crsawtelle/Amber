@@ -1,5 +1,0 @@
-"0","# using tidytext to unnest each word in the book"
-"0",""
-"0","amber_tidy <- amber_books %>%"
-"0","  unnest_tokens(word, text)"
-"0","#amber_tidy"
