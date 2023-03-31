@@ -1,0 +1,4 @@
+"0","the_hand_of_oberon <- amber_tidy %>%"
+"0","  group_by(book) %>%"
+"0","  filter(book == ""The Hand of Oberon"")"
+"0","# the_hand_of_oberon"

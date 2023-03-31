@@ -1,5 +1,0 @@
-"0","nine_princes_in_amber <- amber_tidy %>%"
-"0","  group_by(book) %>%"
-"0","  filter(book == ""Nine Princes in Amber"") "
-"2","Error in group_by(., book) : object 'amber_tidy' not found
-"

@@ -1,0 +1,6 @@
+"0","amber_chapter_gamma %>%"
+"0","  mutate(title = reorder(title, gamma*topic)) %>%"
+"0","  ggplot(aes(factor(topic), gamma)) +"
+"0","  geom_boxplot() +"
+"0","  facet_wrap(~title, ncol = 2) +"
+"0","  labs(x = ""topic"", y = expression(gamma))"

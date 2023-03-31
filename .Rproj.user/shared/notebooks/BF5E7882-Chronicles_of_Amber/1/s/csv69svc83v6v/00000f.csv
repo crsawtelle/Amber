@@ -1,0 +1,4 @@
+"0","the_guns_of_avalon <- amber_tidy %>%"
+"0","  group_by(book) %>%"
+"0","  filter(book == ""The Guns of Avalon"")"
+"0","# the_guns_of_avalon"

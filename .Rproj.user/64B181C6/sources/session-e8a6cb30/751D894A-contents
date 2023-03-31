@@ -1,0 +1,1121 @@
+---
+title: "Chronicles_of_Amber"
+author: "Crystal Sawtelle"
+date: "2023-03-03"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(Amber)
+if (!require(tidyverse)) install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+# tidytext is used for unnesting into tokens and cleaning data
+if (!require(tidytext)) install.packages("tidytext", repos = "http://cran.us.r-project.org")
+# textdata need for afinn and nrc lexicon
+if (!require(tidydata)) install.packages("textdata", repos = "http://cran.us.r-project.org")
+if (!require(tidyclean)) install.packages("textclean", repos = "http://cran.us.r-project.org")
+# tm need for tidying document term matrix objects
+if (!require(tm)) install.packages("tm", repos = "http://cran.us.r-project.org")
+# wordcloud used for word cloud
+if (!require(wordcloud)) install.packages("wordcloud", repos = "http://cran.us.r-project.org")
+# reshape2 is used to make a comparison cloud
+if (!require(reshape2)) install.packages("reshape2", repos = "http://cran.us.r-project.org")
+# igraph used to manipulate and analyze networks - create columns of "from" and "to" to visualize a network
+if (!require(igraph)) install.packages("igraph", repos = "http://cran.us.r-project.org")
+# ggraph used to graph network created from igraph package
+if (!require(ggraph)) install.packages("ggraph", repos = "http://cran.us.r-project.org")
+# widyr used for counting and correlating pairs of words within sections of text
+if (!require(widyr)) install.packages("widyr", repos = "http://cran.us.r-project.org")
+# syuzhet used to get_sentiment for sentiment function
+if (!require(syuzhet)) install.packages("syuzhet", repos = "http://cran.us.r-project.org")
+# topicmodels used for LDA function - creates a n-topic LDA model
+if (!require(topicmodels)) install.packages("topicmodels", repos = "http://cran.us.r-project.org")
+# sentimentr detects sentiment by each line in the text
+if (!require(sentimentr)) install.packages("sentimentr", repos = "http://cran.us.r-project.org")
+library(tidyverse)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+library(tidytext)
+library(textdata)
+library(textclean)
+library(tm)
+library(wordcloud)
+library(reshape2)
+library(igraph)
+library(ggraph)
+library(widyr)
+library(syuzhet)
+library(topicmodels)
+library(sentimentr)
+# scales used to make a confusion matrix for misclassified words
+library(scales)
+# used to get readability statistics - not sure if I am using
+library(quanteda)
+```
+
+
+```{r, echo=FALSE}
+amber_books <- chronicles_of_amber() %>%
+  group_by(book) %>%
+  mutate(linenumber = row_number(),
+         chapter = cumsum(str_detect(text, regex("^chapter [\\divxlc]")))) %>%
+  ungroup()
+
+# amber_books
+```
+
+```{r}
+nine_princes <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "Nine Princes in Amber")
+
+guns_avalon <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "The Guns of Avalon")
+# the_guns_of_avalon
+
+sign_unicorn <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "Sign of the Unicorn")
+# sign_of_the_unicorn
+
+hand_oberon <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "The Hand of Oberon")
+# the_hand_of_oberon
+
+courts_chaos <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "The Courts of Chaos")
+# the_courts_of_chaos
+
+trumps_doom <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "The Trumps of Doom")
+# the_trumps_of_doom
+
+blood_amber <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "Blood of Amber")
+# blood_of_amber
+
+sign_chaos <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "Sign of Chaos")
+# sign_of_chaos
+
+knight_shadows <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "Knight of Shadows")
+# knight_of_shadows
+
+prince_chaos <- amber_books %>%
+  group_by(book) %>%
+  filter(book == "Prince of Chaos")
+# prince_of_chaos
+```
+
+```{r, echo=FALSE}
+# using tidytext to unnest each word in the book
+
+amber_tidy <- amber_books %>%
+  unnest_tokens(word, text)
+#amber_tidy
+```
+
+```{r}
+library(rlang)
+# calculate custom stop words using IDF
+calc_idf <- function(df, word, document){
+  words <- df %>% pull({{word}}) %>% unique()
+}
+```
+
+
+```{r, echo=FALSE}
+# remove stop words "the", "a", "if", etc.
+
+data("stop_words")
+
+amber_tidy <- amber_tidy %>%
+  anti_join(stop_words, by = "word")
+
+amber_tidy %>%
+  count(word, sort = TRUE)
+
+```
+
+
+
+```{r, echo=FALSE, include=FALSE}
+# # create a custom stop words list to add to standard stop words
+# word = c("i’d", "i’m", "it’s", "don’t", "we’ve", "have’t", "didn’t", "you’re", "you’ve", "i’ve", "hadn’t", "we’ve", "i’ll", "he’s", "can’t", "wasn’t", "what’s", "won’t", "we’d", "doesn’t", "you’d", "he’d", "wouldn’t", "let’s", "there’s", "she’s", "she’d", "you’ll", "they’re", "we’ll", "weren’t", "aren’t")
+# 
+# lexicon = c( "custom",  "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom")
+# 
+# data <- data.frame(word, lexicon)
+# custom_stop_words <- rbind(data, stop_words)
+# # custom_stop_words
+# 
+# # rerunning amber tidy with new custom_stop_words
+# amber_tidy <- anti_join(amber_tidy, custom_stop_words, by = "word")
+# 
+# amber_tidy %>%
+#   count(word, sort = TRUE)
+
+amber_tidy_graph <- amber_tidy %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 600) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_col(fill = "navy") +
+  coord_flip()
+
+amber_tidy_graph %>% plotly::ggplotly()
+```
+
+
+
+
+
+
+Start individual book word frequency analysis
+```{r, echo=FALSE}
+nine_princes_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "Nine Princes in Amber") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5) 
+
+nine_princes_graph <- ggplot(nine_princes_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  facet_wrap(~ book, ncol = 2, scales = "free_y") +
+  labs(title = "Nine Princes in Amber") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14)) 
+
+# nine_princes_graph
+```
+
+```{r, echo=FALSE}
+guns_avalon_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "The Guns of Avalon") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+guns_avalon_graph <- ggplot(guns_avalon_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  labs(title = "The Guns of Avalon") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# guns_avalon_graph %>% plotly::ggplotly()
+
+```
+
+```{r, echo=FALSE}
+sign_unicorn_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "Sign of the Unicorn") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+sign_unicorn_graph <- ggplot(sign_unicorn_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  labs(title = "Sign of the Unicorn") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# sign_unicorn_graph %>% plotly::ggplotly()
+
+```
+
+```{r, echo=FALSE}
+hand_oberon_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "The Hand of Oberon") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+hand_oberon_graph <- ggplot(hand_oberon_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  labs(title = "The Hand of Oberon") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# hand_oberon_graph %>% plotly::ggplotly()
+
+```
+
+```{r, echo=FALSE}
+courts_chaos_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "The Courts of Chaos") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+courts_chaos_graph <- ggplot(courts_chaos_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  labs(title = "The Courts of Chaos") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# courts_chaos_graph %>% plotly::ggplotly()
+
+```
+
+```{r, echo=FALSE}
+trumps_doom_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "The Trumps of Doom") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+trumps_doom_graph <- ggplot(trumps_doom_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  labs(title = "The Trumps of Doom") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# trumps_doom_graph %>% plotly::ggplotly()
+
+```
+
+```{r, echo=FALSE}
+blood_amber_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "Blood of Amber") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+blood_amber_graph <- ggplot(blood_amber_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  labs(title = "Blood of Amber") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# blood_amber_graph %>% plotly::ggplotly()
+
+```
+
+```{r, echo=FALSE}
+sign_chaos_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "Sign of Chaos") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+sign_chaos_graph <- ggplot(sign_chaos_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  labs(title = "Sign of Chaos") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# sign_chaos_graph %>% plotly::ggplotly()
+
+```
+
+```{r, echo=FALSE}
+knight_shadow_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "Knight of Shadows") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+knight_shadow_graph <- ggplot(knight_shadow_word, aes(word, n)) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) + 
+  labs(title = "Knight of Shadows") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# knight_shadow_graph %>% plotly::ggplotly()
+
+```
+
+```{r, echo=FALSE}
+prince_chaos_word <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "Prince of Chaos") %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  slice(1:5)
+
+prince_chaos_graph <- ggplot(prince_chaos_word, aes(word, n), fill = word) +
+  geom_col(fill = c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1", "lightsteelblue")) +
+  coord_flip(ylim = c(0, 220)) +
+  labs(title = "Prince of Chaos") +
+  theme(plot.title = element_text(size = 14), axis.text = element_text(size = 14))
+
+# prince_chaos_graph %>% plotly::ggplotly()
+
+```
+
+```{r, fig.height=8, echo=FALSE}
+cowplot::plot_grid(nine_princes_graph, guns_avalon_graph, sign_unicorn_graph, hand_oberon_graph, courts_chaos_graph, 
+                   trumps_doom_graph, blood_amber_graph, sign_chaos_graph, knight_shadow_graph, prince_chaos_graph, ncol = 2)
+```
+
+
+
+Topic modeling - per-topic-per-word probabilities, $\beta$
+```{r}
+# create a custom stop words list to add to standard stop words - removing mostly names of characters
+word = c("random", "luke", "ganelon", "brand", "benedict", "jurt", "julian", "dalt", "bill", "left", "eric", "bleys", "jasra", "dalt's", "dalt", "mandor", "caine", "gerard", "nayda", "amber", "time")
+
+lexicon = c( "custom",  "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom", "custom",  "custom",  "custom",  "custom",  "custom",  "custom",  "custom", "custom", "custom")
+
+data <- data.frame(word, lexicon)
+custom_stop_words <- rbind(data, stop_words)
+
+amber_by_chapter <- amber_books %>%
+  group_by(book) %>%
+  mutate(chapter = cumsum(str_detect(text, regex("^chapter ", ignore_case = TRUE)))) %>%
+  ungroup() %>%
+  filter(chapter > 0) %>%
+  unite(document, book, chapter)
+
+amber_by_chapter_word <- amber_by_chapter %>%
+  unnest_tokens(word, text)
+
+word_counts <- amber_by_chapter_word %>%
+  anti_join(stop_words) %>%
+  count(document, word, sort = TRUE)
+
+word_counts
+```
+
+Cast tidy data into a document text matrix
+```{r}
+amber_chapter_dtm <- word_counts %>%
+  cast_dtm(document, word, n)
+amber_chapter_dtm
+```
+Latent Dirichlet Allocation (LDA) - treats each document as a mixture of topics, and each topic as a mixture of words
+```{r}
+amber_chapter_lda <- LDA(amber_chapter_dtm, k = 10, control = list(seed = 486))
+amber_chapter_lda
+```
+
+```{r}
+amber_chapter_topic <- tidy(amber_chapter_lda, matrix = "beta")
+amber_chapter_topic
+```
+
+```{r}
+# showing the top 5 terms percentages per topic
+amber_top_terms <- amber_chapter_topic %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 5) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+amber_top_terms
+```
+
+```{r}
+amber_top_terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~topic, scales = "free") +
+  scale_y_reordered()
+```
+
+
+
+
+Topic modeling - per-document-per-topic probabilities, $\gamma$
+$\gamma$ = an estimated proportion of words from that document that are generated from that topic
+```{r}
+amber_chapter_gamma <- tidy(amber_chapter_lda, matrix = "gamma")
+amber_chapter_gamma 
+```
+
+Split book and chapter to view per-document-per-topic probability
+```{r}
+amber_chapter_gamma <- amber_chapter_gamma %>%
+  separate(document, c("title","chapter"), sep = "_", convert = TRUE)
+head(amber_chapter_gamma)
+```
+
+reorder titles in order of topic 1 through topic 10 before plotting
+```{r}
+amber_chapter_gamma %>%
+  mutate(title = reorder(title, gamma*topic)) %>%
+  ggplot(aes(factor(topic), gamma)) +
+  geom_boxplot() +
+  facet_wrap(~title, ncol = 2) +
+  labs(x = "topic", y = expression(gamma))
+```
+
+```{r}
+chapter_classification <- amber_chapter_gamma %>%
+  group_by(title, chapter) %>%
+  slice_max(gamma) %>%
+  ungroup()
+chapter_classification
+```
+
+65% of the books were misclassified. This makes sense because of the series has a typical theme and a lot of the same characters.
+```{r}
+book_topics <- chapter_classification %>%
+  count(title, topic) %>%
+  group_by(title) %>%
+  slice_max(n, n=1) %>%
+  ungroup() %>%
+  transmute(consensus = title, topic)
+
+chapter_classification %>%
+  inner_join(book_topics, by = "topic") %>%
+  filter(title != consensus)
+```
+
+augmenting - assigning each word in each document to a topic - the more words in a document assigned to that topic, generally, the more weight gamma will go on that document-topic classification 
+returns a tidy data frame of book-term counts
+Because the LDA algoristhm is stochastic, it can land on a topic that spans multiple books (stochastic = randomly determined; having random proabability distribution or pattern that may be analyzed statistically but may not be predicted precisely)
+```{r}
+assignments <- augment(amber_chapter_lda, data = amber_chapter_dtm)
+assignments
+```
+
+```{r}
+assignments <- assignments %>%
+  separate(document, c("title", "chapter"), sep = "_", convert = TRUE) %>%
+  inner_join(book_topics, by = c(".topic" = "topic"))
+assignments
+```
+
+```{r}
+assignments %>%
+  count(title, consensus, wt=count) %>%
+  mutate(across(c(title, consensus), ~str_wrap(., 20))) %>%
+  group_by(title) %>%
+  mutate(percent = n/sum(n)) %>%
+  ggplot(aes(consensus, title, fill = percent)) +
+  geom_tile() +
+  scale_fill_gradient2(high = "navy", label = percent_format()) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), panel.grid = element_blank()) +
+  labs(x = "Book words were assigned to",
+       y = "Book words came from",
+       fill = "% of assignment")
+```
+
+
+
+what were the most commonly mistaken words
+```{r}
+wrong_words <- assignments %>%
+  filter(title != consensus)
+
+wrong_words %>%
+  count(title, consensus, term, wt = count) %>%
+  ungroup() %>%
+  arrange(desc(n))
+```
+
+
+
+```{r, warning=FALSE, echo=FALSE, fig.height=8}
+# graph the sentiment of every 40 lines - integer division
+amber_sentiment <- amber_tidy %>%
+  inner_join(get_sentiments("nrc"), by = join_by(word)) %>%
+  count(book, index = linenumber %/% 10, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+ggplot(amber_sentiment, aes(index, sentiment, fill = book)) +
+  geom_col(show.legend = FALSE) +
+  geom_smooth(show.legend = FALSE) +
+  facet_wrap(~book, ncol = 2, scales = "free_x") +
+  coord_flip()
+  
+```
+
+
+### Figure: Words that contribute to positive and negative sentiment in Roger Zelazny's novel Nine Princes of Amber
+
+```{r}
+amber_tidy %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+Identify the top 10 positive and top 10 negative words in the book series.
+Will remove words that are names because they do not have a sentiment of positive or negative (i.e. corwin, random, amber, and luke)
+```{r, warning=FALSE}
+amber_bing_word_counts <- amber_tidy %>%
+  inner_join(get_sentiments("nrc"), by = join_by(word)) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+amber_bing_word_counts %>%
+  group_by(sentiment) %>%
+  top_n(5) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, ncol = 2, scales = "free_y") +
+  coord_flip()
+```
+
+Create a word cloud separated by positive and negative words.
+```{r,fig.height=7, warning=FALSE}
+amber_tidy %>%
+  inner_join(get_sentiments("bing"), by = join_by(word)) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("steelblue4", "magenta4"), max.words = 100)
+  
+```
+
+Split by chapter and find the most negative and positive chapters
+```{r}
+amber_chapters <- chronicles_of_amber() %>%
+  group_by(book) %>%
+  unnest_tokens(chapter, text, token = "regex", pattern = "Chapter|chapter [\\divxlc]") %>%
+  ungroup()
+
+amber_chapters %>%
+  group_by(book) %>%
+  summarise(chapters = n())
+```
+
+```{r, warning=FALSE}
+amber_negative <- get_sentiments("bing") %>%
+  filter(sentiment == "negative")
+
+amber_word_count <- amber_tidy %>%
+  group_by(book, chapter) %>%
+  summarise(words = n())
+
+amber_tidy %>%
+  semi_join(amber_negative) %>%
+  group_by(book, chapter) %>%
+  summarize(negativewords = n()) %>%
+  left_join(amber_word_count, by = c("book", "chapter")) %>%
+  mutate(ratio = negativewords/words) %>%
+  filter(chapter != 0) %>%
+  top_n(1) %>%
+  ungroup()
+
+```
+
+Most negative chapters
+```{r, warning=FALSE}
+amber_negative <- get_sentiments("nrc") %>%
+  filter(sentiment == "negative")
+
+amber_word_count <- amber_tidy %>%
+  group_by(book, chapter) %>%
+  summarise(words = n())
+
+amber_tidy %>%
+  semi_join(amber_negative) %>%
+  group_by(book, chapter) %>%
+  summarize(negativewords = n()) %>%
+  left_join(amber_word_count, by = c("book", "chapter")) %>%
+  mutate(ratio = negativewords/words) %>%
+  filter(chapter != 0) %>%
+  top_n(1) %>%
+  ungroup()
+```
+
+Get most positive chapters
+```{r, warning=FALSE}
+amber_positive <- get_sentiments("bing") %>%
+  filter(sentiment == "positive")
+
+amber_tidy %>%
+  semi_join(amber_positive) %>%
+  group_by(book, chapter) %>%
+  summarize(positive_words = n()) %>%
+  left_join(amber_word_count, by = c("book", "chapter")) %>%
+  mutate(ratio = positive_words/words) %>%
+  filter(chapter != 0) %>%
+  top_n(1) %>%
+  ungroup()
+```
+
+```{r, warning=FALSE}
+amber_positive <- get_sentiments("nrc") %>%
+  filter(sentiment == "positive")
+
+amber_tidy %>%
+  semi_join(amber_positive) %>%
+  group_by(book, chapter) %>%
+  summarize(positive_words = n()) %>%
+  left_join(amber_word_count, by = c("book", "chapter")) %>%
+  mutate(ratio = positive_words/words) %>%
+  filter(chapter != 0) %>%
+  top_n(1) %>%
+  ungroup()
+```
+
+Get most used words, including stop words
+```{r}
+book_words <- chronicles_of_amber() %>%
+  unnest_tokens(word, text) %>%
+  count(book, word, sort = TRUE) %>%
+  ungroup()
+
+total_words <- book_words %>%
+  group_by(book) %>%
+  summarize(total = sum(n))
+
+book_words <- left_join(book_words, total_words)
+
+book_words
+```
+
+```{r}
+
+```
+
+
+sentiment_by command to get an aggregate sentiment measure for the entire series
+```{r, warning=FALSE}
+sentiment2 <- sentiment(amber_books$text)
+summary(sentiment2$sentiment)
+nineprinces_senti <- sentiment(nine_princes$text)
+nineprinces_senti$book <- "Nine Princes in Amber"
+gunsavalon_senti <- sentiment(guns_avalon$text)
+gunsavalon_senti$book <- "The Guns of Avalon"
+signunicorn_senti <- sentiment(sign_unicorn$text)
+signunicorn_senti$book <- "Sign of the Unicorn"
+handoberon_senti <- sentiment(hand_oberon$text)
+handoberon_senti$book <- "The Hand of Oberon"
+courtschaos_senti <- sentiment(courts_chaos$text)
+courtschaos_senti$book <- "The Courts of Chaos"
+trumpsdoom_senti <- sentiment(trumps_doom$text)
+trumpsdoom_senti$book <- "Trumps of Doom"
+bloodamber_senti <- sentiment(blood_amber$text)
+bloodamber_senti$book <- "Blood of Amber"
+signchaos_senti <- sentiment(sign_chaos$text)
+signchaos_senti$book <- "Sign of Chaos"
+knightshadows_senti <- sentiment(knight_shadows$text)
+knightshadows_senti$book <- "Knight of Shadows"
+princechaos_senti <- sentiment(prince_chaos$text)
+princechaos_senti$book <- "Prince of Chaos"
+
+books <- rbind(nineprinces_senti, gunsavalon_senti, signunicorn_senti, handoberon_senti, courtschaos_senti, trumpsdoom_senti, bloodamber_senti, signchaos_senti, knightshadows_senti, princechaos_senti)
+
+books$book <- as.factor(books$book)
+
+books %>%
+  filter(sentiment != 0) %>%
+  ggplot(aes(sentiment, color = book)) +
+  scale_color_brewer(palette = 'Paired') +
+  ggthemes::theme_fivethirtyeight() +
+  geom_density() 
+
+```
+
+```{r}
+makeDesityPlot <- function(txt) {
+    senti <- txt %>%
+    get_sentences() %>%
+    sentiment()  %>%
+    filter(sentiment != 0)
+  
+    densitySentiment <- density(senti$sentiment)
+
+    plot(densitySentiment, main = "Density of Sentiments")
+    polygon(densitySentiment, col = "navy")
+  
+  return(densitySentiment)
+}
+
+makeDesityPlot(amber_books$text)
+```
+
+```{r}
+plotEmotion <- function(rawText){
+    rawText %>%
+    get_sentences() %>%
+    emotion_by(drop.unused.emotions = TRUE) %>%
+    group_by(emotion_type) %>%
+    summarise(ave_emotion = mean(ave_emotion)) -> textSummary
+    
+    par(mar = c(11,4,4,4))
+    barplot(textSummary$ave_emotion, names.arg = textSummary$emotion_type, las=2, col="navy")
+  return(textSummary)
+    
+}
+
+plotEmotion(amber_books$text)
+```
+
+
+
+Find the term frequency distribution of the book words for each novel
+```{r}
+tf_dist_amber <- ggplot(book_words, aes(n/total, fill = book)) +
+  geom_histogram(show.legend = FALSE) +
+  xlim(NA, 0.0009) +
+  facet_wrap(~book, ncol = 2, scales = "free_y")
+tf_dist_amber
+```
+Zipf's law states that the frequency that a word appears is inversely proportional to its rank
+- rank tells us the rank of each word within the frequency table - How important is it
+```{r}
+freq_by_rank <- book_words %>%
+  group_by(book) %>%
+  mutate(rank = row_number(), term_freq = n/total)
+
+head(freq_by_rank)
+tail(freq_by_rank)
+
+```
+
+plot the x-axis and term frequency on the y-axis on a logarithmic scale 
+the inversely proportional relationship will have a constant negative slope
+
+```{r}
+rank_subset <- freq_by_rank %>%
+  filter(rank < 500, rank > 10)
+
+lm(log10(term_freq) ~ log10(rank), data = rank_subset)
+
+freq_by_rank %>%
+  ggplot(aes(rank, term_freq, color = book)) +
+  geom_abline(intercept = -0.77, slope = -1.04, color = "navy", linetype = 2) +
+  geom_line(size = 1.1, alpha = 0.8, show.legend = FALSE) +
+  scale_x_log10() +
+  scale_y_log10()
+```
+
+Calculating the tf-idf (term frequency - inverse document frequency) attempts to find the words that are important (common) in the text, but not too common
+when idf and tf-idf are zero, these are extremely common words. This approach decreases the weight for those common words. The inverse document frequency will be a higher number for words that occur in fewer of the documents in the collection.
+tf-idf will allow us to find words that are characteristic for one book within all the books. Words that are more common in one book than another. 
+```{r}
+book_words <- book_words %>%
+  bind_tf_idf(word, book, n)
+
+book_words
+
+# look at terms with higher tf-idf - typically proper nouns (i.e. names) 
+book_words %>%
+  select(-total) %>%
+  arrange(desc(tf_idf))
+```
+
+```{r, warning=FALSE}
+book_words %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>%
+  group_by(book) %>%
+  top_n(5) %>%
+  ungroup() %>%
+  ggplot(aes(x = fct_reorder(word, tf_idf), tf_idf, fill = book)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~book, ncol = 2, scales = "free") +
+  coord_flip()
+```
+
+N-Gram analysis
+We are going to start with two words using token = "ngrams", n = 2
+```{r}
+# create bigrams of the chronicles of amber
+amber_grams <- chronicles_of_amber() %>%
+  unnest_tokens(bigram, text, token = "ngrams", n=2)
+
+# view the most used bigrams
+# amber_grams %>%
+#   count(bigram, sort = TRUE)
+
+# split the bigrams into two separate columns word1 and word2
+bigrams_separated <- amber_grams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+# remove stopwords from bigrams
+bigrams_filtered <- bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word) %>%
+  filter(!is.na(word1)) %>%
+  filter(!is.na(word2))
+
+# new bigram counts without stopwords
+bigram_counts <- bigrams_filtered %>%
+  count(word1, word2, sort = TRUE)
+
+bigram_counts
+```
+
+Process tf-idf for bigrams 
+```{r}
+bigram_united <- bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+bigram_united
+```
+
+```{r}
+bigram_tf_idf <- bigram_united %>%
+  count(book, bigram) %>%
+  bind_tf_idf(bigram, book, n) %>%
+  arrange(desc(tf_idf))
+bigram_tf_idf
+```
+
+```{r, warning=FALSE}
+bigram_united %>%
+  count(book, bigram) %>%
+  bind_tf_idf(bigram, book, n) %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(bigrams = factor(bigram, levels = rev(unique(bigram)))) %>%
+  group_by(book) %>%
+  top_n(5) %>%
+  ungroup() %>%
+  ggplot(aes(x = fct_reorder(bigram, tf_idf), tf_idf, fill = book)) +
+  geom_col(stat = "idendity", show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf of bigram to novel") +
+  facet_wrap(~book, ncol = 2, scales = "free") +
+  coord_flip()
+```
+
+```{r}
+bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+```
+
+```{r}
+AFINN <- get_sentiments("afinn")
+not_word <- bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(AFINN, by = c(word2 = "word")) %>%
+  count(word2, value, sort = TRUE) %>%
+  ungroup()
+not_word
+```
+
+```{r}
+not_word %>%
+  mutate(contribution = n * value) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n*value, fill = n * value > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Afinn sentiment score * number of occurences") +
+  coord_flip()
+```
+
+Network of bigrams graph - use igraph package
+```{r}
+bigram_network_graph <- bigram_counts %>%
+  filter(n > 10) %>%
+  graph_from_data_frame()
+bigram_network_graph
+```
+
+graph network of bigrams - use ggraph package
+```{r, fig.height=5}
+set.seed(486)
+a <- grid::arrow(type = "closed", length = unit(.07, "inches"))
+
+ggraph(bigram_network_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.05, "inches")) +
+  geom_node_point(color = "lightblue", size = 2) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+```
+
+Counting and correlating pairs of words - use widyr package
+- The most often used pair of words within a 10 row section is "amber" and "time", however, time and amber are one of the most used words in the novel.
+```{r}
+word = c("tir", "na", "nog'th")
+
+lexicon = c( "custom",  "custom", "custom")
+
+data <- data.frame(word, lexicon)
+custom_stop_words <- rbind(data, stop_words)
+
+# separate the books and see which words tend to fall into the same sections - every 10 lines
+amber_section_words <- chronicles_of_amber() %>%
+  mutate(section = row_number() %/% 10) %>% # separate the books into sections of 10 rows
+  filter(section > 0) %>% 
+  unnest_tokens(word, text) %>%
+  filter(!word %in% custom_stop_words$word)
+
+# count the words co-occurring within each section - create word pairs using pairwise_count function
+word_pairs <- amber_section_words %>%
+  pairwise_count(word, section, sort = TRUE)
+
+
+word_pairs %>%
+  filter(item1 == "time")
+
+word_pairs %>%
+  filter(item1 == "amber")
+```
+
+Find the correlation among words indicating how often they appear together relative to how often they appear separately. 
+This uses the Phi coefficient (equivalent to the Pearson correlation) for measuring binary correlation. Focusing on how much more likely either both word X and Y appear together or neither appear together, or they appear without each other. 
+
+$n_{11}$ = Has word X and word Y
+$n_{10}$ = Has word X but not word Y
+$n_{01}$ = Not word X but has word Y
+$n_{00}$ = Not word X or word Y
+$n_{1.}$ = Row total of Has word X
+$n_{0.}$ = Row total of no word X
+$n_{.1}$ = Column total has word Y
+$n_{.0}$ = Column total no word Y
+n = total
+
+$$ \phi = \frac{n_{11}n_{00} - n_{10}n_{01}}{\sqrt{n_{1.}n_{0.}n_{.0}n_{.1}}}$$
+pairwise_cor() function finds the phi coefficients between words based on how often the appear in the same 10 line section
+```{r}
+word_cor <- amber_section_words %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(word, section, sort = TRUE)
+word_cor
+```
+
+```{r}
+word_cor %>%
+  filter(item1 %in% c("pattern", "amber", "logrus", "shadow")) %>%
+  group_by(item1) %>%
+  top_n(5) %>%
+  ungroup() %>%
+  mutate(item2 = reorder(item2, correlation)) %>%
+  ggplot(aes(item2, correlation)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~item1, scales = "free") +
+  coord_flip()
+```
+
+```{r}
+set.seed(486)
+
+word_cor %>%
+  filter(correlation > 0.21) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "violet", size = 2) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Individual book analysis
+```{r}
+nine_princes_in_amber <- amber_tidy %>%
+  group_by(book) %>%
+  filter(book == "Nine Princes in Amber") 
+nine_princes_in_amber
+```
+
+```{r, warning=FALSE}
+afinn <- nine_princes_in_amber %>%
+  inner_join(get_sentiments("afinn"), by = join_by(word)) %>%
+  group_by(index = linenumber %/% 40) %>%
+  summarise(sentiment = sum(value)) %>%
+  mutate(method = "AFINN")
+
+bing_and_nrc <- bind_rows(
+  nine_princes_in_amber %>%
+    inner_join(get_sentiments("bing"), by = join_by(word)) %>%
+    mutate(method = "BING"),
+  nine_princes_in_amber %>%
+    inner_join(get_sentiments("nrc"), by = join_by(word)) %>%
+                 filter(sentiment %in% c("positive", "negative")) %>%
+    mutate(method = "NRC") 
+)
+  
+bing_and_nrc <- bing_and_nrc %>%
+    count(method, index = linenumber %/% 40, sentiment) %>%
+    spread(sentiment, n, fill = 0) %>%
+    mutate(sentiment = positive - negative)
+
+bind_rows(afinn, bing_and_nrc) %>%
+  ggplot(aes(index, sentiment, fill = method )) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~method, ncol = 1, scales = "free_y")
+```
+
+```{r}
+bing_word_counts <- nine_princes_in_amber %>%
+  inner_join(get_sentiments("bing"), by = join_by(word)) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+bing_word_counts %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col() +
+  facet_wrap(~sentiment, scales = "free_y") +
+  coord_flip()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,0 @@
-"0","freq_by_rank <- book_words %>%"
-"0","  group_by(book) %>%"
-"0","  mutate(rank = row_number(), term_freq = n/total)"
-"0",""
-"0","head(freq_by_rank)"

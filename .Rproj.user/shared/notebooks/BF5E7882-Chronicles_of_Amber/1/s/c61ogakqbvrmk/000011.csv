@@ -1,0 +1,7 @@
+"0","# showing the top 5 terms percentages per topic"
+"0","amber_top_terms <- amber_chapter_topic %>%"
+"0","  group_by(topic) %>%"
+"0","  slice_max(beta, n = 5) %>%"
+"0","  ungroup() %>%"
+"0","  arrange(topic, -beta)"
+"0","amber_top_terms"

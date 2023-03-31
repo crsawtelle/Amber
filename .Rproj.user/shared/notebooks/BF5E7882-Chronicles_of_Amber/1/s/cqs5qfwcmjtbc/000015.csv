@@ -1,7 +1,0 @@
-"0","AFINN <- get_sentiments(""afinn"")"
-"0","not_word <- bigrams_separated %>%"
-"0","  filter(word1 == ""not"") %>%"
-"0","  inner_join(AFINN, by = c(word2 = ""word"")) %>%"
-"0","  count(word2, value, sort = TRUE) %>%"
-"0","  ungroup()"
-"0","not_word"
