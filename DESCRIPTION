@@ -1,14 +1,11 @@
 Package: Amber
 Type: Package
-Title: Amber: Roger Zelazny's Chronicles of Amber 10 book series 
+Title: Roger Zelazny's Chronicle of Amber 10 book series
 Version: 0.1.0
-Author: Crystal Sawtelle
-Maintainer: crs592@nau.edu
-Description: Full text of the Chronicles of Amber, written by Roger Zelazny. 
-This text is ready for text analysis of the 10 books "Nine Princes in Amber", 
-"The Guns of Avalon", "Sign of the Unicorn", "The Hand of Oberon", 
-"The Courts of Chaos", "The Trumps of Doom", "Blood of Amber", "Sign of Chaos",
-"Knight of Shadows", and "Prince of Chaos".
+Author@R: person("Crystal", "Sawtelle", role = c("aut", "cre"), email = "crs592@nau.edu") 
+Maintainer: Crystal Sawtelle <crs592@nau.edu>
+Description: Full text of the Chronicles of Amber, written by Roger Zelazny. This text is ready for text analysis of the 10 books "Nine Princes in Amber", "The Guns of Avalon", "Sign of the Unicorn", "The Hand of Oberon", "The Courts of Chaos", "The Trumps of Doom", "Blood of Amber", "Sign of Chaos", "Knight of Shadows", and "Prince of Chaos".
+License: What license it uses
 Encoding: UTF-8
 LazyData: true
 Depends: 

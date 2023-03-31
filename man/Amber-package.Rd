@@ -4,8 +4,8 @@
 \name{Amber-package}
 \alias{Amber}
 \alias{Amber-package}
-\title{Amber: What the Package Does (Title Case)}
+\title{Amber: Roger Zelazny's Chronicle of Amber 10 book series}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+Full text of the Chronicles of Amber, written by Roger Zelazny. This text is ready for text analysis of the 10 books "Nine Princes in Amber", "The Guns of Avalon", "Sign of the Unicorn", "The Hand of Oberon", "The Courts of Chaos", "The Trumps of Doom", "Blood of Amber", "Sign of Chaos", "Knight of Shadows", and "Prince of Chaos".
 }
 \keyword{internal}
