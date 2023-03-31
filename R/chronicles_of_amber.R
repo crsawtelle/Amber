@@ -6,15 +6,25 @@
 #' the titles of each novel.
 #'
 #' Individual books:
+#'
 #' nine_princes_in_amber: Nine Princes in Amber, 1970
+#'
 #' the_guns_of_avalon: The Guns of Avalon, 1972
+#'
 #' sign_of_the_unicorn: The Sign of the Unicorn, 1975
+#'
 #' the_hand_of_oberon: The Hand of Oberon, 1976
+#'
 #' the_courts_of_chaos: The Courts of Chaos, 1978
+#'
 #' the_trumps_of_doom: The Trumps of Doom, 1985
+#'
 #' blood_of_amber: Blood of Amber, 1986
+#'
 #' sign_of_chaos: Sign of Chaos, 1987
+#'
 #' knight_of_shadows: Knight of Shadows, 1989
+#'
 #' prince_of_chaos: Prince of Chaos, 1991
 #'
 #' @return A data frame with two columns: 'text' and 'book'
