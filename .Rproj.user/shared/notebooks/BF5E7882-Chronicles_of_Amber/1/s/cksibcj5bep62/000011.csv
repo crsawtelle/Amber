@@ -1,5 +1,0 @@
-"0","chapter_classification <- amber_chapter_gamma %>%"
-"0","  group_by(title, chapter) %>%"
-"0","  slice_max(gamma) %>%"
-"0","  ungroup()"
-"0","chapter_classification"

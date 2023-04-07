@@ -1,5 +1,0 @@
-"0","library(rlang)"
-"0","# calculate custom stop words using IDF"
-"0","calc_idf <- function(df, word, document){"
-"0","  words <- df %>% pull({{word}}) %>% unique()"
-"0","}"

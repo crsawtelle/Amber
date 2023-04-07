@@ -1,3 +1,5 @@
+"0","# Start individual book word frequency analysis"
+"0",""
 "0","nine_princes_word <- amber_tidy %>%"
 "0","  group_by(book) %>%"
 "0","  filter(book == ""Nine Princes in Amber"") %>%"
