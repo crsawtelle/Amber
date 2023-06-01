@@ -1,0 +1,16 @@
+"0","# Cast tidy data into a document text matrix"
+"0","# Sparsity - sparse matrix is a matrix where most of the elements are zero. When working with text data, we say our data is ""sparse"" because most documents do not contain most words, resulting in a representation of mostly zeros. There are special data structures and algorithms for dealing with sparse data that can take advantage of their structure. For example, an array can more efficiently store the locations and values of only the non-zero elements instead of all elements. - Supervised Machine Learning for Text Analysis in R Emil Hvitfeldt and Julia Silge"
+"0",""
+"0","amber_chapter_dtm <- word_counts %>%"
+"0","  cast_dtm(document, word, n)"
+"0","amber_chapter_dtm"
+"1","<<DocumentTermMatrix (documents: 115, terms: 17792)>>
+"
+"1","Non-/sparse entries: 114203/1931877
+"
+"1","Sparsity           : 94%
+"
+"1","Maximal term length: 21
+"
+"1","Weighting          : term frequency (tf)
+"

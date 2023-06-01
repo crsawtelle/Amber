@@ -1,0 +1,4 @@
+"0","assignments <- assignments %>%"
+"0","  separate(document, c(""title"", ""chapter""), sep = ""_"", convert = TRUE) %>%"
+"0","  inner_join(book_topics, by = c("".topic"" = ""topic""))"
+"0","head(assignments)"

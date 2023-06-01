@@ -1,0 +1,6 @@
+"0","# augmenting - assigning each word in each document to a topic - the more words in a document assigned to that topic, generally, the more weight gamma will go on that document-topic classification "
+"0","# returns a tidy data frame of book-term counts"
+"0","# Because the LDA algorithm is stochastic, it can land on a topic that spans multiple books (stochastic = randomly determined; having random probability distribution or pattern that may be analyzed statistically but may not be predicted precisely)"
+"0",""
+"0","assignments <- augment(amber_chapter_lda, data = amber_chapter_dtm)"
+"0","head(assignments, 10)"

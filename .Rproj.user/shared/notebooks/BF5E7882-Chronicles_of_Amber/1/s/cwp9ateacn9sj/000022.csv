@@ -1,0 +1,5 @@
+"0",""
+"0","# look at terms with higher tf-idf - typically proper nouns (i.e. names) "
+"0","head(book_words %>%"
+"0","  select(-total) %>%"
+"0","  arrange(desc(tf_idf)))"

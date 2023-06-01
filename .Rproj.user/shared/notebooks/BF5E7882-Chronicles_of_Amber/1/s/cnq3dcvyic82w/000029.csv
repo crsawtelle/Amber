@@ -1,0 +1,5 @@
+"0","# Word topic probability - $\beta$ the model computes the probability of that term being generated from that topic"
+"0","# For example, random has a .00000997 probability of appearing in topic 1, but a 0.01794711 probability of appearing in topic 4, etc."
+"0",""
+"0","amber_chapter_topic <- tidy(amber_chapter_lda, matrix = ""beta"")"
+"0","head(amber_chapter_topic)"

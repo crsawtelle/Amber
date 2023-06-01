@@ -1,0 +1,8 @@
+"0","bigram_tf_idf <- bigram_united %>%"
+"0","  group_by(book) %>%"
+"0","  count(book, bigram) %>%"
+"0","  bind_tf_idf(bigram, book, n) %>%"
+"0","  slice_max(tf_idf, n = 5) %>%"
+"0","  ungroup() %>%"
+"0","  arrange(desc(tf_idf))"
+"0","bigram_tf_idf"

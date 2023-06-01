@@ -1,3 +1,0 @@
-"0","amber_tidy %>%"
-"0","  count(word) %>%"
-"0","  with(wordcloud(word, n, max.words = 100))"

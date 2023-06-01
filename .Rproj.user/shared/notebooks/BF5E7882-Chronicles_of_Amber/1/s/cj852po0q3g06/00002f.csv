@@ -1,0 +1,4 @@
+"0",""
+"0","# right_bigrams <- bigrams_filtered %>%"
+"0","#   filter(word1 == ""right"") %>%"
+"0","#   count(word1, word2, sort = TRUE)"

@@ -1,0 +1,7 @@
+"0","# Classification of the topics - topic 1 has a gamma probability of approximately 25% chance of appearing in The Guns of Avalon chapter 1"
+"0","  "
+"0","chapter_classification <- amber_chapter_gamma %>%"
+"0","  group_by(title, chapter) %>%"
+"0","  top_n(1, gamma) %>%"
+"0","  ungroup()"
+"0","head(chapter_classification, 10)"

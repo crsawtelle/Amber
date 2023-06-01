@@ -1,0 +1,5 @@
+"0","# Split book and chapter to view per-document-per-topic probability"
+"0",""
+"0","amber_chapter_gamma <- amber_chapter_gamma %>%"
+"0","  separate(document, c(""title"",""chapter""), sep = ""_"", convert = TRUE)"
+"0","head(amber_chapter_gamma)"
