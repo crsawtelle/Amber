@@ -1,0 +1,3 @@
+"0",""
+"0","head(word_pairs %>%"
+"0","  filter(item1 == ""amber""), 10)"
