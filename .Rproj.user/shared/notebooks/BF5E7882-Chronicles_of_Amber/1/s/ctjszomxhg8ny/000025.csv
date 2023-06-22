@@ -1,4 +1,0 @@
-"0","# Process tf-idf for bigrams "
-"0","bigram_united <- bigrams_filtered %>%"
-"0","  unite(bigram, word1, word2, sep = "" "")"
-"0","bigram_united"

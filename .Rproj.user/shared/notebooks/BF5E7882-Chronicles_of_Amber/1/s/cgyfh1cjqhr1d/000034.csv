@@ -1,5 +1,0 @@
-"0","word_cor <- amber_section_words %>%"
-"0","  group_by(word) %>%"
-"0","  filter(n() >= 20) %>%"
-"0","  pairwise_cor(word, section, sort = TRUE)"
-"0","head(word_cor)"

@@ -1,1 +1,8 @@
+"0","# Zipf's law states that the frequency that a word appears is inversely proportional to its rank"
+"0","# - rank tells us the rank of each word within the frequency table - How important is it"
 "0",""
+"0","freq_by_rank <- book_words %>%"
+"0","  group_by(book) %>%"
+"0","  mutate(rank = row_number(), term_freq = n/total)"
+"0",""
+"0","tail(freq_by_rank)"

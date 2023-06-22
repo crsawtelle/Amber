@@ -1,8 +1,0 @@
-"0","# Calculating the tf-idf (term frequency - inverse document frequency) attempts to find the words that are important (common) in the text, but not too common"
-"0","# when idf and tf-idf are zero, these are extremely common words. This approach decreases the weight for those common words. The inverse document frequency will be a higher number for words that occur in fewer of the documents in the collection."
-"0","# tf-idf will allow us to find words that are characteristic for one book within all the books. Words that are more common in one book than another. "
-"0",""
-"0","book_words <- book_words %>%"
-"0","  bind_tf_idf(word, book, n)"
-"0",""
-"0","head(book_words)"

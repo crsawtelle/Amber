@@ -837,6 +837,7 @@ word_cor <- amber_section_words %>%
   filter(n() >= 20) %>%
   pairwise_cor(word, section, sort = TRUE)
 head(word_cor)
+
 ```
 
 \newpage
